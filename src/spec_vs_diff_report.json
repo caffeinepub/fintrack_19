@@ -1,0 +1,135 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-13T17:14:18.594Z",
+  "summary": "The diff adds a basic React app shell with Internet Identity-gated routing, navigation, and placeholder pages, plus a partially implemented Motoko actor with in-memory per-principal maps and a few 'add' methods. Most required CRUD, stable storage, listing/filtering/sorting, auto-categorization behavior, budgets/alerts/goals/analytics logic, and UI data rendering are not implemented (several pages explicitly note missing backend methods).",
+  "missing_requirements": [
+    {
+      "id": "REQ-2",
+      "requirement": "Create backend canister data models and stable storage for Transactions, Categories, Auto-categorization Rules, Budgets, Budget Alerts (in-app), and Savings Goals, all scoped per user principal, with full per-user CRUD, validation, and upgrade persistence.",
+      "reason": "Backend shows only partial data models and only 'add' flows are visible; storage uses non-stable in-memory Maps and there is no evidence of stable storage/upgrade persistence. CRUD operations and clear error variants/messages are not shown (uses Runtime.trap).",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "requirement": "Build Transactions module UI and backend API for add/edit/delete transactions and listing with basic filtering/sorting; transaction must include amount, date, description/merchant, optional category, and type (income/expense).",
+      "reason": "UI only supports adding a transaction and explicitly states listing/edit/delete are not implemented. Backend evidence shows only addTransaction and Transaction type lacks an explicit income/expense field. No listing/filter/sort methods are evidenced.",
+      "evidence": [
+        "frontend/src/pages/Transactions.tsx",
+        "frontend/src/components/transactions/TransactionFormDialog.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Build Categories module UI and backend API to create/rename/delete categories and assign categories to transactions; deletion must handle existing transactions gracefully.",
+      "reason": "UI only supports adding categories and explicitly states view/edit/delete require backend methods. No evidence of rename/delete category methods or transaction category assignment UI/flow beyond passing null categoryId on transaction creation.",
+      "evidence": [
+        "frontend/src/pages/CategoriesRules.tsx",
+        "frontend/src/components/categories/CategoryFormDialog.tsx",
+        "frontend/src/components/transactions/TransactionFormDialog.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "requirement": "Implement rule-based auto-categorization with create/edit/enable-disable/delete rules; apply matching rules deterministically on transaction creation with defined precedence; UI shows when/why category was auto-applied.",
+      "reason": "Rule UI is effectively disabled and shows an error stating category selection/listing is unavailable. No evidence that addTransaction applies rules or that rules have enable/disable, priority, or deterministic precedence logic. No UI showing auto-applied reason.",
+      "evidence": [
+        "frontend/src/components/rules/RuleFormDialog.tsx",
+        "frontend/src/pages/CategoriesRules.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "Build Budgets module with create/edit/delete budgets (monthly, optional category scope) and compute utilization from transactions; consistent calculations across views.",
+      "reason": "Budgets page is placeholder and explicitly says backend is not implemented; no evidence of budget CRUD or utilization computation methods.",
+      "evidence": [
+        "frontend/src/pages/BudgetsAlerts.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "requirement": "Implement in-app budget alerts with configurable thresholds; generate alerts on threshold crossing due to transaction changes; persistent read/dismiss state per user; no external notifications.",
+      "reason": "Alerts page is placeholder and explicitly says backend methods are not available; no evidence of threshold configuration, alert generation on transaction add/edit, or read/dismiss persistence methods.",
+      "evidence": [
+        "frontend/src/pages/BudgetsAlerts.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "requirement": "Build Savings Goals module with create/update/delete goals, progress tracking, and manual contributions; per-user persistence.",
+      "reason": "Goals page is placeholder and explicitly says backend not implemented; no evidence of goal CRUD or contributions/progress logic.",
+      "evidence": [
+        "frontend/src/pages/Goals.tsx",
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "requirement": "Create Analytics dashboard with charts/summaries (income/expenses/net, category breakdown, budget utilization, goals progress) with empty-state handling and selectable time range.",
+      "reason": "Dashboard contains only static $0 placeholders and explicitly states backend is incomplete; no evidence of analytics queries, charts driven by data, or time-range selection logic.",
+      "evidence": [
+        "frontend/src/pages/Dashboard.tsx"
+      ]
+    },
+    {
+      "id": "REQ-1",
+      "requirement": "Backend methods associate stored/returned data with the caller principal and do not expose one user’s data to another user; when signed out, app prevents access to authenticated screens and prompts to sign in.",
+      "reason": "Frontend gating to SignIn exists, but backend access control for reads/queries cannot be verified because listing/get methods are not evidenced. Also, most modules rely on unimplemented fetch methods, so isolation on returned data cannot be confirmed from the diff.",
+      "evidence": [
+        "frontend/src/App.tsx",
+        "backend/main.mo"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Added a branded footer linking to caffeine.ai with referral parameters.",
+      "reason": "The BuildRequest does not ask for third-party promotional branding/links.",
+      "evidence": [
+        "frontend/src/components/layout/AppLayout.tsx"
+      ]
+    },
+    {
+      "description": "Introduced dark/light theme switching via next-themes ThemeProvider.",
+      "reason": "REQ-11 asks for a coherent theme, but does not request a theme toggle/system theme integration specifically.",
+      "evidence": [
+        "frontend/src/App.tsx"
+      ]
+    }
+  ],
+  "confidence": 0.74,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/categories/CategoryFormDialog.tsx",
+    "frontend/src/components/layout/AppLayout.tsx",
+    "frontend/src/components/layout/AppNav.tsx",
+    "frontend/src/components/rules/RuleFormDialog.tsx",
+    "frontend/src/components/transactions/TransactionFormDialog.tsx",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/pages/BudgetsAlerts.tsx",
+    "frontend/src/pages/CategoriesRules.tsx",
+    "frontend/src/pages/Dashboard.tsx",
+    "frontend/src/pages/Goals.tsx",
+    "frontend/src/pages/Settings.tsx",
+    "frontend/src/pages/SignIn.tsx",
+    "frontend/src/pages/Transactions.tsx",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

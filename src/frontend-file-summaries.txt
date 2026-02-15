@@ -1,0 +1,19 @@
+{
+  "frontend/src/App.tsx": "Main application component with TanStack Router setup, authentication gate using Internet Identity via properly named RootComponent, and route definitions for all pages (Dashboard, Transactions, Categories, Budgets, Goals, Settings) wrapped in AppLayout for authenticated users.",
+  "frontend/src/pages/SignIn.tsx": "Sign-in page with Internet Identity login button, feature highlights, and welcoming hero section using emerald/teal gradient theme.",
+  "frontend/src/pages/Dashboard.tsx": "Dashboard page showing financial overview with KPI cards (income, expenses, balance, goals) and placeholder sections for charts; displays backend incomplete notice.",
+  "frontend/src/pages/Transactions.tsx": "Transactions management page with add transaction button and placeholder for transaction list; shows backend limitation notice and opens TransactionFormDialog.",
+  "frontend/src/pages/CategoriesRules.tsx": "Combined categories and rules management page with tabs; includes add buttons for both categories and rules with backend limitation notices.",
+  "frontend/src/pages/BudgetsAlerts.tsx": "Budgets and alerts management page with tabs showing placeholders for budget tracking and alert notifications; displays backend not implemented notice.",
+  "frontend/src/pages/Goals.tsx": "Savings goals page with placeholder for goals list and progress tracking; shows backend not implemented notice.",
+  "frontend/src/pages/Settings.tsx": "Settings page displaying user's Internet Identity principal and sign-out functionality with security information card.",
+  "frontend/src/components/layout/AppLayout.tsx": "Main layout wrapper component providing consistent structure with navigation header and footer for authenticated pages.",
+  "frontend/src/components/layout/AppNav.tsx": "Responsive navigation component with desktop horizontal nav and mobile sheet menu, showing all main app sections with active state highlighting using emerald theme.",
+  "frontend/src/components/transactions/TransactionFormDialog.tsx": "Dialog form for adding new transactions with amount, description, and date fields; submits to backend addTransaction method with proper timestamp conversion.",
+  "frontend/src/components/categories/CategoryFormDialog.tsx": "Dialog form for creating new categories with title input; submits to backend addCategory method.",
+  "frontend/src/components/rules/RuleFormDialog.tsx": "Dialog form for creating auto-categorization rules; currently disabled due to missing backend method to fetch categories list.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for backend mutations (addTransaction, addCategory, addRule) with proper query invalidation and error handling.",
+  "frontend/index.css": "Global styles with OKLCH color system customized to emerald/teal theme (hue ~160-165) for primary colors, maintaining accessible contrast in both light and dark modes.",
+  "frontend/tailwind.config.js": "Tailwind configuration with extended theme matching the emerald/teal color palette and standard responsive breakpoints.",
+  "frontend/src/index.css": "Global styles with OKLCH color system customized to emerald/teal theme (hue ~160-165) for primary colors, maintaining accessible contrast in both light and dark modes."
+}

@@ -1,0 +1,366 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Simplified FinTrack (IC + React) — Frontend UI, Auth Gate, Navigation, and Module Screens",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Add Internet Identity sign-in/out UX and enforce authenticated access to finance modules using the authenticated principal for all actor calls.",
+      "acceptanceCriteria": [
+        "Users can sign in and sign out with Internet Identity.",
+        "Backend methods associate stored/returned data with the caller principal and do not expose one user’s data to another user.",
+        "When signed out, the app prevents access to authenticated screens and prompts to sign in."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/auth/AuthGate.tsx",
+          "operation": "create",
+          "description": "Create an authentication gate component that uses the existing useInternetIdentity hook (without modifying it) to (1) show a sign-in call-to-action when unauthenticated and (2) render authenticated app content when identity is present. Use shadcn-ui components to present consistent sign-in/loading/error states. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/SignIn.tsx",
+          "operation": "create",
+          "description": "Create a dedicated sign-in screen with Internet Identity login button using useInternetIdentity().login and an optional explanation of privacy/scoping; ensure it is used by AuthGate for unauthenticated users. Use shadcn-ui Button/Card components for layout consistency. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/Settings.tsx",
+          "operation": "create",
+          "description": "Create Settings page with account info (display principal string from identity.getPrincipal()) and a sign-out action using useInternetIdentity().clear. Use shadcn-ui components (Card, Button, Separator) for consistent styling. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/services/actorProvider.ts",
+          "operation": "create",
+          "description": "Create a small wrapper utility/hook around the existing useActor hook to standardize access to the authenticated actor and expose the current principal string for queries, without modifying useActor/useInternetIdentity."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "create",
+          "description": "Create the root App component (imported by frontend/src/main.tsx) that wraps the app routes with AuthGate so unauthenticated users cannot access authenticated screens."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Implement Transactions UI: list with filtering/sorting plus add/edit/delete flows wired to backend actor calls and updating UI without refresh.",
+      "acceptanceCriteria": [
+        "Users can create a transaction with at minimum: amount, date, description/merchant, category (optional), and type (income/expense).",
+        "Users can edit and delete their own transactions.",
+        "Users can view a transactions list with basic filters (e.g., date range, category, income vs expense) and sorting (e.g., newest first).",
+        "All transaction actions update the UI without a full page refresh."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Transactions.tsx",
+          "operation": "create",
+          "description": "Create the Transactions page with a list/table view, filter controls (date range, category, type), sorting (newest first), and primary action to add a transaction. Use shadcn-ui components (Table, Button, Input, Select, Dialog, DropdownMenu) for UI primitives. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/transactions/TransactionFormDialog.tsx",
+          "operation": "create",
+          "description": "Create an add/edit transaction dialog form collecting amount, date, description/merchant, type, and optional category; on submit, call the backend via actor wrapper and close with optimistic UI updates via React Query. Use shadcn-ui Form/Dialog components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/transactions/TransactionFilters.tsx",
+          "operation": "create",
+          "description": "Create reusable filter/sort controls for the transactions list (date range, category, type, sort order) and expose controlled state back to Transactions page. Use shadcn-ui Input/Select components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/services/transactions.ts",
+          "operation": "create",
+          "description": "Create a frontend service module that encapsulates transaction-related actor calls (create/edit/delete/list) and normalizes timestamps/amounts for UI; integrate with React Query keys so UI updates without full refresh."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the Transactions page into the app navigation/routing so it is reachable from the main nav and guarded by AuthGate."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Implement Categories UI for create/rename/delete and ensure transactions can be assigned categories from relevant transaction flows.",
+      "acceptanceCriteria": [
+        "Users can create, rename, and delete categories.",
+        "Deleting a category handles existing transactions gracefully (e.g., uncategorize or reassign via a user choice).",
+        "Users can set or change a transaction’s category from the transaction form and/or transaction list."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/CategoriesRules.tsx",
+          "operation": "create",
+          "description": "Create a combined Categories/Rules page that includes categories management (create/rename/delete) and a section placeholder for rules (wired in REQ-5). Use shadcn-ui components (Tabs, Card, Table, Dialog, AlertDialog) for structure and confirmations. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/categories/CategoryManager.tsx",
+          "operation": "create",
+          "description": "Create a categories management component with inline rename and delete confirmations; when deleting, prompt for how to handle existing transactions (uncategorize vs reassign) and reflect the selection in calls. Use shadcn-ui AlertDialog/Select. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/services/categories.ts",
+          "operation": "create",
+          "description": "Create a frontend service module for categories-related actor calls and React Query caching; expose category list for use by transaction forms and filters."
+        },
+        {
+          "path": "frontend/src/components/transactions/TransactionFormDialog.tsx",
+          "operation": "modify",
+          "description": "Wire category selection into the transaction form using categories query data and send chosen category to the actor call. Use shadcn-ui Select for category selection. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/Transactions.tsx",
+          "operation": "modify",
+          "description": "Ensure the transactions list supports quick category display and optional category edits (either inline or via edit dialog) using the shared categories data."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the Categories/Rules page into the app navigation/routing so it is reachable from the main nav and guarded by AuthGate."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Implement Auto-categorization Rules UI to create/edit/enable/disable/delete rules and display when/why a transaction was auto-categorized.",
+      "acceptanceCriteria": [
+        "Users can create, edit, enable/disable, and delete auto-categorization rules.",
+        "When a new transaction is created, the backend applies matching rules deterministically and sets the category when applicable.",
+        "If multiple rules match, the system uses a defined precedence (e.g., first by priority then creation time) and behaves consistently.",
+        "UI shows when/why a category was auto-applied (e.g., rule name)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/rules/RuleManager.tsx",
+          "operation": "create",
+          "description": "Create a rules management component that lists rules and supports create/edit, enable/disable toggles, and delete. Use shadcn-ui components (Table, Switch, Dialog, Button). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/rules/RuleFormDialog.tsx",
+          "operation": "create",
+          "description": "Create a rule form dialog for keyword match + target category + optional priority ordering (as required by the UI), wired to service calls. Use shadcn-ui Form/Dialog components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/services/rules.ts",
+          "operation": "create",
+          "description": "Create a frontend service module for rules-related actor calls and React Query caching; include stable query keys and invalidate relevant transaction lists after rule changes where appropriate."
+        },
+        {
+          "path": "frontend/src/pages/CategoriesRules.tsx",
+          "operation": "modify",
+          "description": "Wire RuleManager into the Rules section/tab on the combined Categories/Rules page, sharing the categories list for rule-to-category assignment. Use shadcn-ui Tabs for sectioning. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/Transactions.tsx",
+          "operation": "modify",
+          "description": "Display a visual indicator when a category was auto-applied (e.g., a small label or tooltip showing rule name) using transaction data returned from the backend; implement empty-state handling when the info is absent. Use shadcn-ui Tooltip/Badge where available. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Implement Budgets UI for create/edit/delete and display monthly utilization computed from transactions with consistent summaries/detail views.",
+      "acceptanceCriteria": [
+        "Users can create, edit, and delete budgets with: name, amount limit, period (monthly), and optional category scope.",
+        "Budget utilization is computed from the user’s transactions for the selected period and shown in the UI (e.g., spent vs remaining).",
+        "Budget calculations are consistent between dashboard summaries and budget detail views."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/BudgetsAlerts.tsx",
+          "operation": "create",
+          "description": "Create a combined Budgets/Alerts page with budgets list, per-budget utilization display (spent vs remaining), and navigation into per-budget details; include an Alerts section placeholder wired in REQ-7. Use shadcn-ui components (Tabs, Card, Progress, Table, Dialog). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/budgets/BudgetFormDialog.tsx",
+          "operation": "create",
+          "description": "Create a budget add/edit dialog capturing name, monthly limit, optional category scope, and alert threshold config inputs (threshold persistence wired in REQ-7). Use shadcn-ui Form/Dialog components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/budgets/BudgetUtilizationCard.tsx",
+          "operation": "create",
+          "description": "Create a reusable budget utilization UI (spent, remaining, utilization %) used on both Budgets page and Dashboard to ensure consistent calculations/presentation. Use shadcn-ui Card/Progress components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/services/budgets.ts",
+          "operation": "create",
+          "description": "Create a frontend service module for budgets-related actor calls and React Query caching; include helper functions for monthly period selection and consistent utilization computation inputs."
+        },
+        {
+          "path": "frontend/src/services/analytics.ts",
+          "operation": "create",
+          "description": "Create shared calculation helpers for period selection and aggregations used across Dashboard analytics and budget utilization summaries to keep results consistent."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the Budgets/Alerts page into the app navigation/routing so it is reachable from the main nav and guarded by AuthGate."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Implement in-app budget alerts UI: configure thresholds per budget, display alerts list, and allow read/dismiss with persistent state.",
+      "acceptanceCriteria": [
+        "Users can configure alert thresholds per budget (at least one threshold supported).",
+        "When a new/edited transaction causes a budget to cross a threshold, an in-app alert is created and visible in the UI.",
+        "Users can mark alerts as read and/or dismiss them, and that state persists.",
+        "No email/SMS/push notifications are used."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/alerts/AlertList.tsx",
+          "operation": "create",
+          "description": "Create an alerts list component showing budget alert items with read/unread state and dismiss controls, plus empty-state messaging. Use shadcn-ui components (List/Table, Badge, Button). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/services/alerts.ts",
+          "operation": "create",
+          "description": "Create a frontend service module for alerts-related actor calls and React Query caching, including mutations to mark read/dismiss and invalidation of alerts and budgets summaries."
+        },
+        {
+          "path": "frontend/src/components/budgets/BudgetFormDialog.tsx",
+          "operation": "modify",
+          "description": "Wire alert threshold configuration inputs (at least one threshold) into the budget create/edit flow and persist via the alerts/budgets services. Use shadcn-ui Input components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/BudgetsAlerts.tsx",
+          "operation": "modify",
+          "description": "Wire AlertList into the Alerts section/tab of the Budgets/Alerts page and ensure actions update UI without refresh via React Query."
+        },
+        {
+          "path": "frontend/src/pages/Transactions.tsx",
+          "operation": "modify",
+          "description": "After successful transaction create/edit/delete, trigger refetch/invalidation for budgets and alerts queries so newly triggered in-app alerts appear without a full page refresh."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Implement Savings Goals UI: create/edit/delete goals, display progress, and allow manual contributions with immediate UI updates.",
+      "acceptanceCriteria": [
+        "Users can create, edit, and delete savings goals.",
+        "Each goal shows progress toward target amount (e.g., current saved, remaining).",
+        "Users can add goal contributions (manual) and see the updated progress immediately.",
+        "Goal data is scoped per user and persists."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Goals.tsx",
+          "operation": "create",
+          "description": "Create the Savings Goals page with list of goals, progress display, and primary actions to add a goal and add contribution. Use shadcn-ui components (Card, Progress, Dialog, Button). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/goals/GoalFormDialog.tsx",
+          "operation": "create",
+          "description": "Create an add/edit goal dialog capturing title, target amount, and optional target date. Use shadcn-ui Form/Dialog components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/goals/ContributionDialog.tsx",
+          "operation": "create",
+          "description": "Create a dialog to add a manual contribution entry for a selected goal; on submit, update progress immediately using React Query mutations and optimistic UI where safe. Use shadcn-ui Form/Dialog components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/services/goals.ts",
+          "operation": "create",
+          "description": "Create a frontend service module for goals and contributions actor calls and React Query caching; include helper functions to compute progress (saved, remaining, %)."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the Goals page into the app navigation/routing so it is reachable from the main nav and guarded by AuthGate."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Implement Analytics dashboard UI with summaries and charts for income/expenses, category breakdown, budget utilization, and goal progress with time range selection and empty states.",
+      "acceptanceCriteria": [
+        "Dashboard shows at least: total income, total expenses, net for a selected period; category breakdown; budget utilization summary; savings goals progress summary.",
+        "Charts render correctly with empty-state handling (e.g., no transactions yet).",
+        "Users can change the time range (at least month-to-date vs custom date range) and the analytics update accordingly."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Dashboard.tsx",
+          "operation": "create",
+          "description": "Create the Dashboard page with period selector (month-to-date and custom date range), KPI summaries (income/expenses/net), category breakdown, budget utilization summary, and goals progress summary, including empty states. Use shadcn-ui components (Card, Tabs/Select, Date inputs, Skeleton). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/analytics/CategoryBreakdownChart.tsx",
+          "operation": "create",
+          "description": "Create a category breakdown chart component with robust empty-state rendering. Use shadcn-ui chart-related styling conventions (and Card wrappers) consistent with the template. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/analytics/IncomeExpenseChart.tsx",
+          "operation": "create",
+          "description": "Create an income vs expenses chart component for the selected period with empty-state handling. Use shadcn-ui Card primitives for layout consistency. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/analytics/PeriodPicker.tsx",
+          "operation": "create",
+          "description": "Create a reusable period picker component supporting month-to-date and custom range, used across Dashboard and Budgets views to keep date selection consistent. Use shadcn-ui Input/Select components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/BudgetsAlerts.tsx",
+          "operation": "modify",
+          "description": "Adopt the shared PeriodPicker and analytics helpers for budget utilization time period selection so calculations match the Dashboard summaries."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the Dashboard page into app routing as a primary section reachable from nav and guarded by AuthGate."
+        }
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "summary": "Create the app navigation structure and routes for Dashboard, Transactions, Categories/Rules, Budgets/Alerts, Savings Goals, and Settings, with unauthenticated sign-in CTA.",
+      "acceptanceCriteria": [
+        "Users can navigate between the main sections from a consistent nav (sidebar or top nav).",
+        "Each section has clear primary actions (e.g., “Add Transaction”, “New Budget”, “New Goal”).",
+        "Unauthenticated users see a sign-in call-to-action instead of the app sections."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/layout/AppLayout.tsx",
+          "operation": "create",
+          "description": "Create an application layout component providing consistent structure (nav + content area) for authenticated screens. Use shadcn-ui components for sidebar/topbar building blocks where appropriate. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/layout/AppNav.tsx",
+          "operation": "create",
+          "description": "Create a consistent navigation component (sidebar or top nav) with links to Dashboard, Transactions, Categories/Rules, Budgets/Alerts, Goals, Settings. Use shadcn-ui components (Button, Separator) for consistent styling. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Implement and wire the routing information architecture and navigation: render AppLayout + AppNav for authenticated routes; render SignIn (or AuthGate unauthenticated view) when signed out; ensure each section is accessible from the nav and has clear primary actions in the page UIs."
+        }
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "summary": "Apply a cohesive finance-tracker theme across the app with accessible typography/spacing and non-blue/non-purple primary brand colors.",
+      "acceptanceCriteria": [
+        "UI uses a consistent design system (buttons, inputs, cards, typography, spacing) across all pages.",
+        "Theme is applied app-wide and remains accessible (reasonable contrast, readable font sizes).",
+        "Primary brand colors are not blue/purple unless explicitly chosen by the user later."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/index.css",
+          "operation": "modify",
+          "description": "Adjust global CSS variables (e.g., --primary, --accent, chart variables) to a coherent finance theme using non-blue/non-purple primary colors (e.g., green/emerald + neutral grays), ensuring contrast remains accessible and consistent across light/dark modes."
+        },
+        {
+          "path": "frontend/src/components/layout/AppLayout.tsx",
+          "operation": "modify",
+          "description": "Ensure layout and typography defaults (page headers, section spacing, card grids) are consistently applied across pages using the shared layout, avoiding one-off styling."
+        },
+        {
+          "path": "frontend/src/pages/Dashboard.tsx",
+          "operation": "modify",
+          "description": "Standardize KPI cards, headings, and spacing patterns on the Dashboard to serve as the design reference for the rest of the app using shadcn-ui Card/Typography patterns. Verify the component's usage instructions before implementing."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "kind": "build_request",
+  "title": "Simplified FinTrack on Internet Computer (Transactions, Categories + Rules, Budgets + In-app Alerts, Goals, Analytics)",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Implement Internet Identity login on the frontend and use the authenticated principal as the user identity for all finance data operations.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Do you want a simplified FinTrack built using IC-compatible features (Motoko + React), such as:\n\nAdd/edit/delete transactions\nCategories and auto-categorization rules\nBudgets and alerts (in-app only)\nSavings goals\nBasic analytics and charts i want in this manner"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can sign in and sign out with Internet Identity.",
+        "Backend methods associate stored/returned data with the caller principal and do not expose one user’s data to another user.",
+        "When signed out, the app prevents access to authenticated screens and prompts to sign in."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Create backend canister data models and stable storage for: Transactions, Categories, Auto-categorization Rules, Budgets, Budget Alerts (in-app), and Savings Goals, all scoped per user principal.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Add/edit/delete transactions",
+          "Categories and auto-categorization rules",
+          "Budgets and alerts (in-app only)",
+          "Savings goals",
+          "Basic analytics and charts"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Data persists across page reloads and canister upgrades (use stable storage patterns).",
+        "All entities are stored and queried per authenticated principal.",
+        "All CRUD methods validate inputs and return clear error variants/messages for invalid operations (e.g., deleting a missing transaction)."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Build Transactions module UI and backend API for add/edit/delete transactions and listing with basic filtering/sorting.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Add/edit/delete transactions"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can create a transaction with at minimum: amount, date, description/merchant, category (optional), and type (income/expense).",
+        "Users can edit and delete their own transactions.",
+        "Users can view a transactions list with basic filters (e.g., date range, category, income vs expense) and sorting (e.g., newest first).",
+        "All transaction actions update the UI without a full page refresh."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Build Categories module UI and backend API to create/rename/delete categories and assign categories to transactions.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Categories and auto-categorization rules"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can create, rename, and delete categories.",
+        "Deleting a category handles existing transactions gracefully (e.g., uncategorize or reassign via a user choice).",
+        "Users can set or change a transaction’s category from the transaction form and/or transaction list."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Implement rule-based auto-categorization: allow users to define rules (e.g., keyword match on description/merchant) that automatically assign a category on transaction creation/import within the app.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Categories and auto-categorization rules"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can create, edit, enable/disable, and delete auto-categorization rules.",
+        "When a new transaction is created, the backend applies matching rules deterministically and sets the category when applicable.",
+        "If multiple rules match, the system uses a defined precedence (e.g., first by priority then creation time) and behaves consistently.",
+        "UI shows when/why a category was auto-applied (e.g., rule name)."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Build Budgets module: allow users to define budgets (e.g., per category and/or overall) for a time period (monthly minimum) and compute budget utilization from transactions.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Budgets and alerts (in-app only)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can create, edit, and delete budgets with: name, amount limit, period (monthly), and optional category scope.",
+        "Budget utilization is computed from the user’s transactions for the selected period and shown in the UI (e.g., spent vs remaining).",
+        "Budget calculations are consistent between dashboard summaries and budget detail views."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Implement in-app budget alerts: generate and display alert items when utilization crosses configurable thresholds (e.g., 80%, 100%), with read/dismiss state stored per user.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Budgets and alerts (in-app only)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can configure alert thresholds per budget (at least one threshold supported).",
+        "When a new/edited transaction causes a budget to cross a threshold, an in-app alert is created and visible in the UI.",
+        "Users can mark alerts as read and/or dismiss them, and that state persists.",
+        "No email/SMS/push notifications are used."
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Build Savings Goals module: create/update/delete goals with target amount and optional target date; track progress using linked contributions (manual entries) and/or computed from transactions.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Savings goals"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can create, edit, and delete savings goals.",
+        "Each goal shows progress toward target amount (e.g., current saved, remaining).",
+        "Users can add goal contributions (manual) and see the updated progress immediately.",
+        "Goal data is scoped per user and persists."
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Create Analytics dashboard with basic charts and summaries for spending/income, category breakdown, budget utilization, and savings goal progress.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Basic analytics and charts"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Dashboard shows at least: total income, total expenses, net for a selected period; category breakdown; budget utilization summary; savings goals progress summary.",
+        "Charts render correctly with empty-state handling (e.g., no transactions yet).",
+        "Users can change the time range (at least month-to-date vs custom date range) and the analytics update accordingly."
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "text": "Add core navigation and information architecture for the app: Dashboard, Transactions, Categories/Rules, Budgets/Alerts, Savings Goals, and Settings (at minimum for account/sign-out).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Add/edit/delete transactions",
+          "Categories and auto-categorization rules",
+          "Budgets and alerts (in-app only)",
+          "Savings goals",
+          "Basic analytics and charts"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can navigate between the main sections from a consistent nav (sidebar or top nav).",
+        "Each section has clear primary actions (e.g., “Add Transaction”, “New Budget”, “New Goal”).",
+        "Unauthenticated users see a sign-in call-to-action instead of the app sections."
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Apply a coherent, distinct visual theme across the React app (colors, typography, spacing, components) suitable for a personal finance tracker, avoiding blue/purple as primary brand colors.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "FinTrack built using IC-compatible features (Motoko + React)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "UI uses a consistent design system (buttons, inputs, cards, typography, spacing) across all pages.",
+        "Theme is applied app-wide and remains accessible (reasonable contrast, readable font sizes).",
+        "Primary brand colors are not blue/purple unless explicitly chosen by the user later."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single Motoko actor (no additional backend services).",
+    "Use only Internet Identity for authentication (no JWT, no passwords/bcrypt).",
+    "Use canister stable storage only (no external databases).",
+    "No email/SMS/WhatsApp/push notifications; alerts must be in-app only.",
+    "Do not modify files in frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything under frontend/src/components/ui; compose/wrap these instead."
+  ],
+  "nonGoals": [
+    "Recurring payments via cron/schedulers (e.g., Node-CRON equivalents).",
+    "Importing/parsing SMS or bank messages.",
+    "External notification channels (email, SMS, WhatsApp).",
+    "Third-party auth providers beyond Internet Identity.",
+    "Advanced ML-based categorization; only deterministic rule-based categorization is required."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

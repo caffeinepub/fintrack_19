@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Build a simplified FinTrack finance manager using Internet Computer–compatible stack (Motoko backend + React/TypeScript frontend) with in-app features: transactions CRUD, categories and auto-categorization rules, budgets with in-app alerts, savings goals, and basic analytics/charts.",
+  "architectural_notes": [
+    "Target platform: Internet Computer (Motoko backend canister + React/TypeScript frontend)",
+    "Auth via Internet Identity; no JWT/bcrypt",
+    "Data stored in canister storage (no MongoDB/Atlas)",
+    "Notifications limited to in-app alerts (no email/SMS/Twilio/Nodemailer)"
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-implement-internet-identity-login-on-the-frontend-and-use-the-authenticated-principal-as-the-user-identity-for-all-finance-data-operations",
+      "title": "Implement Internet Identity login on the frontend and use the authenticated principal as the user identity for all finance data operations.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-transactions-module-ui-and-backend-api-for-add-edit-delete-transactions-and-listing-with-basic-filtering-sorting",
+      "title": "Build Transactions module UI and backend API for add/edit/delete transactions and listing with basic filtering/sorting.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-categories-module-ui-and-backend-api-to-create-rename-delete-categories-and-assign-categories-to-transactions",
+      "title": "Build Categories module UI and backend API to create/rename/delete categories and assign categories to transactions.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-rule-based-auto-categorization-allow-users-to-define-rules-e-g-keyword-match-on-description-merchant-that-automatically-assign-a-category-on-transaction-creation-import-within-the-app",
+      "title": "Implement rule-based auto-categorization: allow users to define rules (e.g., keyword match on description/merchant) that automatically assign a category on transaction creation/import within the app.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-budgets-module-allow-users-to-define-budgets-e-g-per-category-and-or-overall-for-a-time-period-monthly-minimum-and-compute-budget-utilization-from-transactions",
+      "title": "Build Budgets module: allow users to define budgets (e.g., per category and/or overall) for a time period (monthly minimum) and compute budget utilization from transactions.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-in-app-budget-alerts-generate-and-display-alert-items-when-utilization-crosses-configurable-thresholds-e-g-80-100-with-read-dismiss-state-stored-per-user",
+      "title": "Implement in-app budget alerts: generate and display alert items when utilization crosses configurable thresholds (e.g., 80%, 100%), with read/dismiss state stored per user.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-savings-goals-module-create-update-delete-goals-with-target-amount-and-optional-target-date-track-progress-using-linked-contributions-manual-entries-and-or-computed-from-transactions",
+      "title": "Build Savings Goals module: create/update/delete goals with target amount and optional target date; track progress using linked contributions (manual entries) and/or computed from transactions.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-analytics-dashboard-with-basic-charts-and-summaries-for-spending-income-category-breakdown-budget-utilization-and-savings-goal-progress",
+      "title": "Create Analytics dashboard with basic charts and summaries for spending/income, category breakdown, budget utilization, and savings goal progress.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-core-navigation-and-information-architecture-for-the-app-dashboard-transactions-categories-rules-budgets-alerts-savings-goals-and-settings-at-minimum-for-account-sign-out",
+      "title": "Add core navigation and information architecture for the app: Dashboard, Transactions, Categories/Rules, Budgets/Alerts, Savings Goals, and Settings (at minimum for account/sign-out).",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-coherent-distinct-visual-theme-across-the-react-app-colors-typography-spacing-components-suitable-for-a-personal-finance-tracker-avoiding-blue-purple-as-primary-brand-colors",
+      "title": "Apply a coherent, distinct visual theme across the React app (colors, typography, spacing, components) suitable for a personal finance tracker, avoiding blue/purple as primary brand colors.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Set up FinTrack simplified app on Internet Computer (Motoko backend canister + React/TypeScript frontend) with Internet Identity auth and canister storage",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Transactions module: add/edit/delete transactions with basic fields and listing/filtering UI",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Categories module with auto-categorization rules (rule-based learned rules supported within app constraints)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Budgets module with in-app alerts/notifications (no email/SMS)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Savings goals tracking module",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Basic analytics and charts dashboard for spending/budgets/goals",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Create backend canister data models and stable storage for: Transactions, Categories, Auto-categorization Rules, Budgets, Budget Alerts (in-app), and Savings Goals, all scoped per user principal.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "FinTrack",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
